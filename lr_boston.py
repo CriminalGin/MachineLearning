@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy import shape
+import matplotlib.pyplot as plt
+from numpy import shape, mean
 from sklearn import datasets, linear_model
 import seaborn; seaborn.set()
 from docx import Document
@@ -49,7 +50,7 @@ model.fit(boston_X_train, boston_y_train)
 # Explained variance score: score=1 is perfect prediction
 model_score = model.score(boston_X_test, boston_y_test)
 
-#3.1.1
+# 3.1.1
 print 'Number of features in the Boston dataset is: %d' %(shape(boston.data)[1])
 print 'Number of samples in the Boston dataset is: %d' %(shape(boston.data)[0])
 
@@ -57,7 +58,7 @@ document.add_paragraph('3.1.1', style = 'Normal')
 document.add_paragraph('Number of features in the Boston dataset is: %d' %(shape(boston.data)[1]), style = 'Normal')
 document.add_paragraph('Number of samples in the Boston dataset is: %d' %(shape(boston.data)[0]), style = 'Normal')
 
-#3.1.2
+# 3.1.2
 model_score_max = -100
 for i_feature in range(shape(boston.data)[1]):
     feature_name = boston.feature_names[i_feature]
@@ -72,12 +73,36 @@ for i_feature in range(shape(boston.data)[1]):
     if model_score > model_score_max:
         model_score_max = model_score
         model_score_max_name = feature_name
+        model_score_max_position = i_feature
+        best_model = model
 print 'Best fitted feature name is: %s' %(model_score_max_name)
 print 'Best fitted model score is: %lf' %(model_score_max)
+
 document.add_paragraph('3.1.2', style = 'Normal')
 document.add_paragraph('Best fitted feature name is: %s' %(model_score_max_name), style = 'Normal')
 document.add_paragraph('Best fitted model score is: %lf' %(model_score_max), style = 'Normal')
 
+# 3.1.3
+diabetes_X = boston.data[:, np.newaxis, model_score_max_position]
+boston_X_test = diabetes_X[-20:]
+boston_Y_test = boston.target[-20:]
+boston_X_test_Y_predict = model.predict(boston_X_test)
+loss = mean((boston_X_test_Y_predict - boston_Y_test) ** 2)
+print 'Value of the loss function for the best fitted model is: %f' %(loss)
+document.add_paragraph('3.1.3', style = 'Normal')
+document.add_paragraph('Value of the loss function for the best fitted model is: %d' %(loss), style = 'Normal')
+
+# 3.1.4
+plt.scatter(boston_X_test, boston_Y_test, c = 'b',  marker='o')
+plt.scatter(boston_X_test, boston_X_test_Y_predict, c = 'r',  marker='*')
+plt.xlabel(model_score_max_name)
+plt.ylabel('Boston House Prices')
+x_new = np.linspace(0, 30, 100)
+y_new = model.predict(x_new[:, None])
+plt.plot(x_new, y_new, c = 'r')
+plt.savefig('3.1.4.png')
+plt.show()
+document.add_paragraph('3.1.4', style = 'Normal')
+document.add_picture('3.1.4.png', width=Inches(6.2))
+
 document.save('Assignment1.docx')
-
-
