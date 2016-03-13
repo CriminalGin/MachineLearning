@@ -6,7 +6,7 @@ from sklearn import datasets, linear_model
 from sklearn.preprocessing import StandardScaler
 import seaborn
 from docx import Document
-from docx.shared import Inches, Pt
+from docx.shared import Inches
 seaborn.set()
 document = Document('Assignment1.docx')
 
@@ -17,9 +17,8 @@ feature_name = ['symboling', 'normalized-losses', 'make', 'fuel-type', 'aspirati
 
 
 # 3.2.1
-df = pd.read_csv('E:\Document Files\Learning\Fund of ML\PythonCode\Prog1\imports-85.data', \
+df = pd.read_csv('imports-85.data', \
                  header=None, names = feature_name, na_values='?')
-
 # 3.2.2
 df = df.dropna()
 
@@ -27,7 +26,7 @@ numpy_df = df.values    # Use its value
 
 # 3.2.3
 numpy_df_train = numpy_df[:int(round(shape(numpy_df)[0] * 0.8))]
-numpy_df_test = numpy_df[:int(shape(numpy_df)[0] - round(shape(numpy_df)[0] * 0.8))]
+numpy_df_test = numpy_df[int(round(shape(numpy_df)[0] * 0.8)):]
 
 model = linear_model.LinearRegression()
 numpy_df_train_x = np.expand_dims(numpy_df_train[:,16], axis=1)
@@ -46,20 +45,20 @@ plt.ylabel('Price')
 plt.title('Linear regression on clean data')
 plt.savefig('3.2.3.png')
 plt.show()
-document.add_paragraph('3.2.3', style = 'Normal')
-document.add_picture('3.2.3.png', width=Inches(6.2))
+document.add_paragraph('3.2.3 Linear regression on the cleaned data', style = 'Heading 2')
+document.add_picture('3.2.3.png', width=Inches(6))
 
 print 'Price prediction for engine size equals to 175 is: %f' %(model.predict(175))
 document.add_paragraph('Price prediction for engine size equals to 175 is: %f' %(model.predict(175)), style = 'Normal')
 
-
-
 # 3.2.4
 X_scaler = StandardScaler()
 numpy_df_train_x_scaled = X_scaler.fit_transform(numpy_df_train_x)
-numpy_df_train_y_scaled = X_scaler.fit_transform(numpy_df_train_y)
 numpy_df_test_x_scaled = X_scaler.transform(numpy_df_test_x)
-numpy_df_test_y_scaled = X_scaler.transform(numpy_df_test_y)
+
+Y_scaler = StandardScaler()
+numpy_df_train_y_scaled = Y_scaler.fit_transform(numpy_df_train_y)
+numpy_df_test_y_scaled = Y_scaler.transform(numpy_df_test_y)
 
 model_standard = linear_model.LinearRegression()
 model_standard.fit(numpy_df_train_x_scaled, numpy_df_train_y_scaled)
@@ -72,8 +71,8 @@ plt.ylabel('Standardized Price')
 plt.title('Linear regression on Standardized data')
 plt.savefig('3.2.4.png')
 plt.show()
-document.add_paragraph('3.2.4', style = 'Normal')
-document.add_picture('3.2.4.png', width=Inches(6.2))
 
+document.add_paragraph('3.2.4 Linear regression on the standardized data', style = 'Heading 2')
+document.add_picture('3.2.4.png', width=Inches(6))
 
-# document.save('Assignment1.docx')
+document.save('Assignment1.docx')

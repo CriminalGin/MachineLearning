@@ -26,7 +26,8 @@ y_predict = log_reg.predict(X_test)
 y_predict_list = list(set(y_predict))
 # print y_predict_list
 
-document.add_paragraph('4.1 Linear Discrimination/Classification')
+document.add_paragraph('4.1 Linear Discrimination/Classification', style = 'Heading 2')
+print 'The predictions only have 0 and 1: yes'
 document.add_paragraph('The predictions only have 0 and 1: yes')
 
 x_index = 0
@@ -35,11 +36,11 @@ plt.scatter(X_test[:, x_index], X_test[:, y_index], c=y_predict, cmap=plt.cm.get
 plt.savefig('4.1.png')
 plt.show()
 
-document.add_picture('4.1.png', width=Inches(6.2))
+document.add_picture('4.1.png', width=Inches(6))
 
 # 4.2
 wrong_num = sum(abs(y_predict - y_test))
 print 'Number of wrong predictions is: %d' %(wrong_num)
-document.add_paragraph('4.2 Classification Statistics')
+document.add_paragraph('4.2 Classification Statistics', style = 'Heading 2')
 document.add_paragraph('Number of wrong predictions is: %d' %(wrong_num))
 document.save('Assignment1.docx')

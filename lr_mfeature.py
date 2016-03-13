@@ -48,7 +48,7 @@ parameter_theta = dot(dot(inv(dot(transpose(feature_matrix), feature_matrix)), t
 print 'Parameter theta calculated by normal equation: ',
 print parameter_theta
 
-document.add_paragraph('3.2.5', style = 'Normal')
+document.add_paragraph('3.2.5 Linear regression with multiple features', style = 'Heading 2')
 p = document.add_paragraph('Parameter theta calculated by normal equation: [ %f %f %f]' %(parameter_theta[0], parameter_theta[1],  parameter_theta[2]))
 
 # 3.2.5.3
