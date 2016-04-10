@@ -74,7 +74,7 @@ def my_clustering(X, y, n_clusters, pca):
         centersNew[i] = X[round(int(X.shape[0] - 1) * np.random.rand())]
     yNew = np.zeros(int(X.shape[0]))
     distance = np.zeros([int(X.shape[0]), n_clusters])
-    '''
+
     while((centersNew != centersOld).any()):
         centersOld = centersNew
         centersOldMatrix = np.ones([int(X.shape[0]) ,int(X.shape[1]), n_clusters])
@@ -117,6 +117,7 @@ def my_clustering(X, y, n_clusters, pca):
                     break
         for j in range(n_clusters):
             centersNew[j] = sum[j] / num[j]
+    '''
     # ARI
     ari = metrics.adjusted_rand_score(y, yNew)
 
