@@ -68,6 +68,7 @@ def my_clustering(X, y, n_clusters, pca):
     # Complete the code here.
     # return scores like this: return [score, score, score, score]
     # clustering
+
     centersOld = np.zeros([n_clusters, int(X.shape[1])])
     centersNew = np.zeros([n_clusters, int(X.shape[1])])
     random = [None] * n_clusters
@@ -78,7 +79,7 @@ def my_clustering(X, y, n_clusters, pca):
     for i in range(n_clusters):
         centersNew[i] = X[random[i]]
     yNew = np.zeros(int(X.shape[0]))
-
+    '''
     while((centersNew != centersOld).any()):
         centersOld = centersNew
         centersOldMatrix = np.ones([int(X.shape[0]) ,int(X.shape[1]), n_clusters])
@@ -105,12 +106,12 @@ def my_clustering(X, y, n_clusters, pca):
     '''
     while((centersNew != centersOld).any()):
         centersOld = centersNew
+        distance = np.zeros(n_clusters)
         for i in range(int(X.shape[0])):
             for j in range(n_clusters):
                 distance[j] = np.linalg.norm(X[i] - centersOld[j])
-            distance = list(distance)
-            yNew[i] = distance.index(min(distance))
-
+            distanceList = list(distance)
+            yNew[i] = distanceList.index(min(distanceList))
         centersNew = np.zeros([n_clusters, int(X.shape[1])])
         sum = np.zeros([n_clusters, int(X.shape[1])])
         num = np.zeros(n_clusters)
@@ -120,9 +121,11 @@ def my_clustering(X, y, n_clusters, pca):
                     sum[j] = sum[j] + X[i]
                     num[j] = num[j] + 1
                     break
+        if (num == 0).any():
+            pass
         for j in range(n_clusters):
             centersNew[j] = sum[j] / num[j]
-    '''
+    pca.inverse_transform(centersNew[0])
     # ARI
     ari = metrics.adjusted_rand_score(y, yNew)
 
@@ -145,8 +148,6 @@ def main():
     fname_lbl = 't10k-labels.idx1-ubyte'
     [X, y]=get_labeled_data(fname_img, fname_lbl)
     print(X.shape)
-
-
     # Plot the mean image
     plot_mean_image(X, 'all images')
 
@@ -181,7 +182,6 @@ def main():
     X = X_dimension_reduced
 
     # =======================================
-
     # Clustering
     # range_n_clusters = [8, 9, 10, 11, 12]
     range_n_clusters = [8]
@@ -189,8 +189,6 @@ def main():
     mri_score = [None] * len(range_n_clusters)
     v_measure_score = [None] * len(range_n_clusters)
     silhouette_avg = [None] * len(range_n_clusters)
-
-
     for n_clusters in range_n_clusters:
         yNew = np.zeros(10000)
         i = n_clusters - range_n_clusters[0]
@@ -204,8 +202,6 @@ def main():
         print('The v-measure score is: ', v_measure_score[i])
         print('The average silhouette score is: ', silhouette_avg[i])
     # =======================================
-
-
     # Complete the code here.
     # Plot scores of all four evaluation metrics as functions of n_clusters.
     plt.figure()
@@ -216,7 +212,7 @@ def main():
     plt.savefig('result.png')
     plt.show()
 
-
+'''
     # system k-means
     ari_score_system = [None] * len(range_n_clusters)
     mri_score_system = [None] * len(range_n_clusters)
@@ -244,6 +240,7 @@ def main():
     plt.savefig('system.png')
     plt.show()
     # =======================================
+'''
 
 if __name__ == '__main__':
     main()
