@@ -70,10 +70,14 @@ def my_clustering(X, y, n_clusters, pca):
     # clustering
     centersOld = np.zeros([n_clusters, int(X.shape[1])])
     centersNew = np.zeros([n_clusters, int(X.shape[1])])
+    random = [None] * n_clusters
+    while((len(random) != len(set(random)))):
+        random = int(X.shape[0] - 1) * np.random.rand(n_clusters)
+        for i in range(len(random)):
+            random[i] = round(random[i])
     for i in range(n_clusters):
-        centersNew[i] = X[round(int(X.shape[0] - 1) * np.random.rand())]
+        centersNew[i] = X[random[i]]
     yNew = np.zeros(int(X.shape[0]))
-    distance = np.zeros([int(X.shape[0]), n_clusters])
 
     while((centersNew != centersOld).any()):
         centersOld = centersNew
@@ -88,6 +92,7 @@ def my_clustering(X, y, n_clusters, pca):
             distance[:, i] = np.linalg.norm(centersOldMatrix[:, :, i] - X, axis=1)
         for i in range(distance.shape[0]):
             distanceList = list(distance[i])
+
             yNew[i] = distanceList.index(min(distanceList))
         for i in range(int(X.shape[0])):
             for j in range(n_clusters):
@@ -124,16 +129,15 @@ def my_clustering(X, y, n_clusters, pca):
     # MRI
     mri = metrics.adjusted_mutual_info_score(y, yNew)
 
-
     # v-measure
     v_measure = metrics.v_measure_score(y, yNew)
 
     # silhouette_avg
     silhouette_avg = metrics.silhouette_score(X, yNew, metric='euclidean')
 
-    print("Cost time is " + str(tEnd - tStart))
+    # print("Cost time is " + str(tEnd - tStart))
     # =======================================
-    return [ari, mri, v_measure, silhouette_avg]  # You won't need this line when you are done
+    return [ari, mri, v_measure, silhouette_avg, yNew]  # You won't need this line when you are done
 
 def main():
     # Load the dataset
@@ -179,17 +183,20 @@ def main():
     # =======================================
 
     # Clustering
-    range_n_clusters = [8, 9, 10, 11, 12]
+    # range_n_clusters = [8, 9, 10, 11, 12]
+    range_n_clusters = [8]
     ari_score = [None] * len(range_n_clusters)
     mri_score = [None] * len(range_n_clusters)
     v_measure_score = [None] * len(range_n_clusters)
     silhouette_avg = [None] * len(range_n_clusters)
 
+
     for n_clusters in range_n_clusters:
+        yNew = np.zeros(10000)
         i = n_clusters - range_n_clusters[0]
         print("Number of clusters is: ", n_clusters)
         tStart = time.time()
-        [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]] = my_clustering(X, y, n_clusters, pca)
+        [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i], yNew] = my_clustering(X, y, n_clusters, pca)
         tEnd = time.time()
         print('Cost time is ' + str(tEnd - tStart))
         print('The ARI score is: ', ari_score[i])
